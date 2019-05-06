@@ -63,7 +63,7 @@
 Критерии ввода корректировки:
 
 \begin{itemize}
-	\item Если получена разрешенная комбинация и вне зависимости от наличия единицы переноса, корректировка не вводится, при этом единица переноса сохраняетсяж
+	\item Если получена разрешенная комбинация и вне зависимости от наличия единицы переноса, корректировка не вводится, при этом единица переноса сохраняется;
 	\item Если получена запрещенная комбинация и нет единицы переноса, то вводится корректировка $0110$;
 	\item Если получена запрещенная комбинация и есть единица переноса, то вводится корректировка $1010$, при этом единица переноса сохраняется;
 \end{itemize}
@@ -295,7 +295,7 @@ $\Pi_i$ -- перенос в следующую тетраду.
 		\caption{\label{tab:dvKorr} Таблица истинности для функций $K_1$ и $K_2$ в корректоре}
 	\begin{tabular}{|l|l|l|l|l|l|l|}
 		\hline
-		y4 & y3 & y2 & y1 & П & K1 & K2 \\ \hline
+		$\gamma_4$ & $\gamma_3$ & $\gamma_2$ & $\gamma_1$ & П & K1 & K2 \\ \hline
 		0  & 0  & 0  & 0  & 0 & 0  & 0  \\ \hline
 		0  & 0  & 0  & 0  & 1 & 0  & 0  \\ \hline
 		0  & 0  & 0  & 1  & 0 & 0  & 0  \\ \hline
@@ -353,7 +353,7 @@ $\Pi_i$ -- перенос в следующую тетраду.
 	\begin{tabular}{cccccccccc}
 		& \multicolumn{4}{c}{$\Pi$}                                                                             & \multicolumn{4}{c}{$\overline{\Pi}$}                                                                            &                     \\
 		& \multicolumn{2}{c}{$\gamma_4$}                          & \multicolumn{2}{c}{$\overline{\gamma_4}$}                         & \multicolumn{2}{c}{$\gamma_4$}                          & \multicolumn{2}{c}{$\overline{\gamma_4}$}                         &                     \\ \cline{2-9}
-		\multicolumn{1}{c|}{\multirow{2}{*}{$\gamma_3$}}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & $\overline{\gamma_1}$                 \\ \cline{2-9}
+		\multicolumn{1}{c|}{\multirow{2}{*}{$\gamma_3$}}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} &                  \\ \cline{2-9}
 		\multicolumn{1}{c|}{}                     & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multirow{2}{*}{$\gamma_1$} \\ \cline{2-9}
 		\multicolumn{1}{c|}{\multirow{2}{*}{$\overline{\gamma_3}$}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} &                     \\ \cline{2-9}
 		\multicolumn{1}{c|}{}                     & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & $\overline{\gamma_1}$                 \\ \cline{2-9}
@@ -362,24 +362,68 @@ $\Pi_i$ -- перенос в следующую тетраду.
 \end{center}
 \end{table}
 
-$\overline{K_1} = \Pi + \gamma_3 \gamma_4 + \bar{\gamma_3} \bar{\gamma_4} + \gamma_1 \gamma_2 \bar{\gamma_3} + \bar{\gamma_1} \bar{\gamma_2} \gamma_3$
+$$\overline{K_1} = \Pi + \gamma_3 \gamma_4 + \bar{\gamma_3} \bar{\gamma_4} + \gamma_1 \gamma_2 \bar{\gamma_3} + \bar{\gamma_1} \bar{\gamma_2} \gamma_3$$
 
 $$K_1 = \overline{\Pi} * \overline{\gamma_3 \gamma_4} * \overline{\bar{\gamma_3} \bar{\gamma_4}} * \overline{\gamma_1 \gamma_2 \bar{\gamma_3}} * \overline{\bar{\gamma_1} \bar{\gamma_2} \gamma_3}$$
+
+
+
+
+
+\begin{table}[H]	
+	\begin{center}
+		\caption{\label{tab:dvKorrK2} Диаграмма Вейча для функции $K_2$}
+	\begin{tabular}{cccccccccc}
+		& \multicolumn{4}{c}{$\Pi$}                                                                             & \multicolumn{4}{c}{$\overline{\Pi}$}                                                                          &                     \\
+		& \multicolumn{2}{c}{$\gamma_4$}                          & \multicolumn{2}{c}{$\overline{\gamma_4}$}                         & \multicolumn{2}{c}{$\gamma_4$}                          & \multicolumn{2}{c}{$\overline{\gamma_4}$}                       &                     \\ \cline{2-9}
+		\multicolumn{1}{c|}{\multirow{2}{*}{$\gamma_4$}}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\overline{\gamma_1}$                 \\ \cline{2-9}
+		\multicolumn{1}{c|}{}                     & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multirow{2}{*}{$\gamma_1$} \\ \cline{2-9}
+		\multicolumn{1}{c|}{\multirow{2}{*}{$\overline{\gamma_3}$}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &                     \\ \cline{2-9}
+		\multicolumn{1}{c|}{}                     & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\overline{\gamma_1}$                \\ \cline{2-9}
+		& $\overline{\gamma_2}$                    & \multicolumn{2}{c}{$\gamma_2$}                          & \multicolumn{2}{c}{$\overline{\gamma_2}$}                         & \multicolumn{2}{c}{$\gamma_2$}                         & $\overline{\gamma_2}$                   &                    
+	\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[H]
+		\begin{center}
+		\caption{\label{tab:dvKorrNK2} Диаграмма Вейча для функции $\overline{K_2}$}
+	\begin{tabular}{cccccccccc}
+		& \multicolumn{4}{c}{$\Pi$}                                                                             & \multicolumn{4}{c}{$\overline{\Pi}$}                                                                            &                     \\
+		& \multicolumn{2}{c}{$\gamma_4$}                          & \multicolumn{2}{c}{$\overline{\gamma_4}$}                         & \multicolumn{2}{c}{$\gamma_4$}                          & \multicolumn{2}{c}{$\overline{\gamma_4}$}                         &                     \\ \cline{2-9}
+		\multicolumn{1}{c|}{\multirow{2}{*}{$\gamma_4$}}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & $\overline{\gamma_1}$                 \\ \cline{2-9}
+		\multicolumn{1}{c|}{}                     & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multirow{2}{*}{$\gamma_1$} \\ \cline{2-9}
+		\multicolumn{1}{c|}{\multirow{2}{*}{$\overline{\gamma_3}$}} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} &                     \\ \cline{2-9}
+		\multicolumn{1}{c|}{}                     & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{x} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & $\overline{\gamma_1}$                \\ \cline{2-9}
+		&$\overline{\gamma_2}$               & \multicolumn{2}{c}{$\gamma_2$}                          & \multicolumn{2}{c}{$\overline{\gamma_2}$}                         & \multicolumn{2}{c}{$\gamma_2$}                          & $\overline{\gamma_2}$                   &                    
+	\end{tabular}
+\end{center}
+\end{table}
+
+$$\overline{K_2} = \overline{\Pi} + \gamma_3 \gamma_4 + \bar{\gamma_3} \bar{\gamma_4} + \gamma_1 \gamma_2 \bar{\gamma_3} + \bar{\gamma_1} \bar{\gamma_2} \gamma_3$$
+
+$$K_2 = \Pi * \overline{\gamma_3 \gamma_4} * \overline{\bar{\gamma_3} \bar{\gamma_4}} * \overline{\gamma_1 \gamma_2 \bar{\gamma_3}} * \overline{\bar{\gamma_1} \bar{\gamma_2} \gamma_3}$$
 
 \subsection{Разработка схемы одноразрядного десятичного сумматора}
 
 \section{Разработка дополнительных схем для функционирования многоразрядного десятичного сумматора (все схемы проектируются в заданном базисе логических элементов с учетом критерия оптимальности)}
+
 \subsection{Разработка преобразователя прямого кода в обратный для работы с отрицательными величинами}
 
 \subsection{Разработка схемы, фиксирующей переполнение разрядной сетки}
+
 \subsection{Разработка схемы для определения знака суммы}
 
 \section{Разработки функциональной схемы многоразрядного десятичного сумматора}
 
 \section{Разработка устройства управления для многоразрядного десятичного сумматора}
+
 \subsection{Разработка входных и выходных регистров хранения числовой информации, участвующей в операции сложения}
+
 \subsection{Разработка регистра признаков результата}
+
 \subsection{Расчет временных параметров устройства управления}
+
 \subsection{Разработка схемы для получения управляющих сигналов и схемы пуска выполнения операции сложения}
 
 \section{Общая структура схемы многоразрядного десятичного сумматора комбинационного типа с устройством управления}

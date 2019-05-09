@@ -404,11 +404,127 @@ $$\overline{K_2} = \overline{\Pi} + \gamma_3 \gamma_4 + \bar{\gamma_3} \bar{\gam
 
 $$K_2 = \Pi * \overline{\gamma_3 \gamma_4} * \overline{\bar{\gamma_3} \bar{\gamma_4}} * \overline{\gamma_1 \gamma_2 \bar{\gamma_3}} * \overline{\bar{\gamma_1} \bar{\gamma_2} \gamma_3}$$
 
+Можно заменить, что для функций $K1$ и $K2$ есть общая часть: $ \overline{\gamma_3 \gamma_4} * \overline{\bar{\gamma_3} \bar{\gamma_4}} * \overline{\gamma_1 \gamma_2 \bar{\gamma_3}} * \overline{\bar{\gamma_1} \bar{\gamma_2} \gamma_3}$.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\linewidth]{images/korr_sh_2}
+	\caption{Логическая схема корректор}
+	\label{fig:korr_sh}
+\end{figure}
+
 \subsection{Разработка схемы одноразрядного десятичного сумматора}
 
-\section{Разработка дополнительных схем для функционирования многоразрядного десятичного сумматора (все схемы проектируются в заданном базисе логических элементов с учетом критерия оптимальности)}
+Cхемв одноразрядного сумматора будет выглядеть следующим образом:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\linewidth]{images/odnSum_sh}
+	\caption{Логическая схема одноразрядного сумматора}
+	\label{fig:odnSum_sh}
+\end{figure}
+
+%В зависимости от результата после пераого этапа сложения может сгенерироватся
+
+В дальнейшем эта схема бует изображаться следующим образом:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\linewidth]{images/odnSum_el}
+	\caption{Одноразрядный сумматор}
+	\label{fig:odnSum_el}
+\end{figure}
+
+$\alpha_4, \alpha_3, \alpha_2, \alpha_1$ -- перавя тетрада;
+
+$\beta_4, \beta_3, \beta_2, \beta_1$ -- вторая тетрада;
+
+$\Pi_{i-1}$ -- перенос из предыдущего разряда;
+
+$\Pi_i$ -- перенос в следующий разряд.
+
+\section{Разработка дополнительных схем для функционирования многоразрядного десятичного сумматора}
 
 \subsection{Разработка преобразователя прямого кода в обратный для работы с отрицательными величинами}
+
+Составим таблицу истиности для пребразователя из проямого кода в обратный.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\linewidth]{images/preobr_ist}
+	\caption{Таблица истиности}
+	\label{fig:preobr_ist}
+\end{figure}
+
+%a4
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{images2/preobr_001}
+	\caption{}
+	\label{fig:preobr001}
+\end{figure}
+
+
+$$-\bar{a}_4 = a_4 a_0 + \bar{a}_4\bar{a}_0$$
+$$-a_4 = \overline{a_4 a_0} * \overline{\bar{a}_4\bar{a}_0}$$
+
+%a3
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{images2/preobr_002}
+	\caption{}
+	\label{fig:preobr002}
+\end{figure}
+
+
+$$-\bar{a}_3 = a_3 a_0 + \bar{a}_3\bar{a}_0$$
+$$-a_3 = \overline{a_3 a_0} * \overline{\bar{a}_3\bar{a}_0}$$
+
+
+%a2
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{images2/preobr_003}
+	\caption{}
+	\label{fig:preobr003}
+\end{figure}
+
+
+$$-\bar{a}_2 = a_2 a_0 + \bar{a}_2\bar{a}_0$$
+$$-a_2 = \overline{a_2 a_0} * \overline{\bar{a}_2\bar{a}_0}$$
+
+
+%a1
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\linewidth]{images2/preobr_004}
+	\caption{}
+	\label{fig:preobr004}
+\end{figure}
+
+
+$$-\bar{a}_1 = a_1 a_0 + \bar{a}_1\bar{a}_0$$
+$$-a_1 = \overline{a_1 a_0} * \overline{\bar{a}_1\bar{a}_0}$$
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\linewidth]{images/preobr_sh}
+	\caption{Логическая схема пребразователя из проямого кода в обратный}
+	\label{fig:preobr_sh}
+\end{figure}
+
+В дальнейшем эту схему будем обозначать следующим образом:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\linewidth]{images/preobr_el}
+	\caption{Пребразователь из проямого кода в обратный}
+	\label{fig:preobr_el}
+\end{figure}
 
 \subsection{Разработка схемы, фиксирующей переполнение разрядной сетки}
 

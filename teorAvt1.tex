@@ -747,8 +747,8 @@ $$\varphi = \overline{bc} *  \overline{a\bar{b}} * \overline{\bar{a}\bar{c}}$$
 
 В одноразрядном двоичном сумматоре задержка по цепи вход-выход P равна задержке по цепи вход-выход S и равна $3ns$, это и будет задержкой этого элемента.
 
-Для одноразрядного десятичного сумматора необходимо найти самую длинную цепь. До корректора саммая длинная цепь состоит из трех переносов в следующий разряд и подсчета суммы, итого до сумматора $12ns$ ($3ns * 3 + 3ns$).
-В следующий разряд сигнал уйдет через $12ns$.
+Для одноразрядного десятичного сумматора необходимо найти самую длинную цепь. До корректора саммая длинная цепь состоит из трех переносов в следующий разряд и подсчета суммы, итого до корректора $12ns$ ($3ns * 3 + 3ns$).
+В следующий разряд ($\Pi_i$) сигнал уйдет через также $12ns$ (цепь из 4 переносов следующй разряд).
 Корректор затрчивает $3ns$. Итого, после корректора сумма уже $15ns$.
 Далее самая длинная цепочка проходит через 2 переноса в следующий разряд и подсчет суммы.
 В сумме одноразрядый десятичный сумматор занимает $24ns$ ($15ns + 3ns * 2 + 3 ns$).
@@ -776,7 +776,346 @@ $T_2$ определяется задержкой во входных цепях
 
 Величина $T_3$ также равна $4ns$, так как сигнал останова СИ4 идет непосредственно за сигналом СИ3.
 
+Имея временные интервалы между выходными сигналами в распределителе сигналов, можно приступить к проектированию данного устройства.
+Распределитель сигналов является генератором следующих четырехразрядных двоичныхчисел:
+
+$0001,0000 - 17$ раз$, 0010, 0100, 1000$
+
 \subsection{Разработка схемы для получения управляющих сигналов и схемы пуска выполнения операции сложения}
+
+Имея комбинацию выходных сигналов, составим таблицу истинности для генератора сигналов.
+
+
+
+\begin{landscape}
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:rasp} Таблица истинности для генератора сигналов}
+
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+			\hline
+			$Q^5_n$ & $Q^4_n$ & $Q^3_n$ & $Q^2_n$ & $Q^1_n$ & $Q^5_{n+1}$ & $Q^4_{n+1}$ & $Q^3_{n+1}$ & $Q^2_{n+1}$ & $Q^1_{n+1}$ & $F_5$ & $F_4$ & $F_3$ & $F_2$ & $F_1$ & СИ4 & СИ3 & СИ2 & СИ1 \\ \hline
+			0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & $\bigtriangleup$ & 0 & 0 & 0 & 1 \\ \hline
+			0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & $\bigtriangleup$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 1 & $\bigtriangleup$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & $\bigtriangleup$ & $\bigtriangledown$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & $\bigtriangleup$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 1 & $\bigtriangleup$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 0 & 1 & 1 & 0 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 1 & 1 & $\bigtriangleup$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 0 & 1 & 1 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & $\bigtriangleup$ & $\bigtriangledown$ & $\bigtriangledown$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & $\bigtriangleup$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 1 & 0 & 0 & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & $\bigtriangleup$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & $\bigtriangleup$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 1 & 0 & 1 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 1 & $\bigtriangleup$ & $\bigtriangledown$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 1 & 1 & 0 & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 0 & $\bigtriangleup$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 1 & 0 & 0 & 1 & 1 & $\bigtriangleup$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 1 & 1 & 1 & 0 & 0 & 1 & 1 & 1 & 1 & 0 & 1 & 1 & 1 & $\bigtriangleup$ & 0 & 0 & 0 & 0 \\ \hline
+			0 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 1 & $\bigtriangleup$ & $\bigtriangledown$ & $\bigtriangledown$ & $\bigtriangledown$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			1 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 0 & $\bigtriangleup$ & 0 & 0 & 0 & 0 \\ \hline
+			1 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & $\bigtriangleup$ & $\bigtriangledown$ & 0 & 0 & 0 & 0 \\ \hline
+			1 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 1 & 1 & 1 & 0 & 0 & 1 & $\bigtriangleup$ & 0 & 0 & 1 & 0 \\ \hline
+			1 & 0 & 0 & 1 & 1 & 1 & 0 & 1 & 0 & 0 & 1 & 0 & $\bigtriangleup$ & $\bigtriangledown$ & $\bigtriangledown$ & 0 & 1 & 0 & 0 \\ \hline
+			1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & $\bigtriangledown$ & 0 & $\bigtriangledown$ & 0 & 0 & 1 & 0 & 0 & 0 \\ \hline
+		\end{tabular}
+
+\end{center}
+\end{table}
+\end{landscape}
+
+Составим функции переходов. Так как в работе используются D-триггеры, то по полученным функциям переходов будем находить входные сигналы триггеров.
+
+%F5
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:F5_tab} Диаграмма Вейча для функции переходов $F_5$ }
+\begin{tabular}{cccccccccc}
+	                                                  &                                                \multicolumn{4}{c}{$Q_1$}                                                 &                                              \multicolumn{4}{c}{$\bar{Q}_1$}                                               &                        \\
+	                                                  &                \multicolumn{2}{c}{$Q_5$}                 &                \multicolumn{2}{c}{$\bar{Q}_5$}                &                    \multicolumn{2}{c}{$Q_5$}                     &             \multicolumn{2}{c}{$\bar{Q}_5$}             &                        \\ \cline{2-9}
+	   \multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}}    &     \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X} &         \multicolumn{1}{c|}{}         & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} &         \multicolumn{1}{c|}{X}          & \multicolumn{1}{c|}{} &      \multicolumn{1}{c|}{}      &      $\bar{Q}_2$       \\ \cline{2-9}
+	              \multicolumn{1}{c|}{}               &     \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} &         \multicolumn{1}{c|}{X}          & \multicolumn{1}{c|}{} &      \multicolumn{1}{c|}{}      & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+	\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} &     \multicolumn{1}{c|}{1}      & \multicolumn{1}{c|}{X} &         \multicolumn{1}{c|}{}         & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} &         \multicolumn{1}{c|}{X}          & \multicolumn{1}{c|}{} &      \multicolumn{1}{c|}{}      &                        \\ \cline{2-9}
+	              \multicolumn{1}{c|}{}               &     \multicolumn{1}{c|}{1}      & \multicolumn{1}{c|}{X} &         \multicolumn{1}{c|}{}         & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{} &      \multicolumn{1}{c|}{}      &      $\bar{Q}_2$       \\ \cline{2-9}
+	                                                  &                                 &                      \multicolumn{2}{c}{}                      &              \multicolumn{2}{c}{}              &                      \multicolumn{2}{c}{}                       &                                 &                        \\
+	              \multicolumn{1}{l}{}                & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$}                                      & \multicolumn{2}{l}{$\bar{Q}_3$}                & \multicolumn{2}{l}{$Q_3$}                                       & \multicolumn{1}{l}{$\bar{Q}_3$} &  \multicolumn{1}{l}{}
+\end{tabular}
+\end{center}
+\end{table}
+
+%D5
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:D5_tab} Диаграмма Вейча для функции переключения триггера $D_5$ }
+		\begin{tabular}{cccccccccc}
+			                                                  &                                         \multicolumn{4}{c}{$Q_1$}                                         &                                      \multicolumn{4}{c}{$\bar{Q}_1$}                                      &                        \\
+			                                                  &                \multicolumn{2}{c}{$Q_5$}                 &        \multicolumn{2}{c}{$\bar{Q}_5$}         &            \multicolumn{2}{c}{$Q_5$}            &             \multicolumn{2}{c}{$\bar{Q}_5$}             &                        \\ \cline{2-9}
+			   \multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}}    &     \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} &      \multicolumn{1}{c|}{}      &      $\bar{Q}_2$       \\ \cline{2-9}
+			              \multicolumn{1}{c|}{}               &     \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} &      \multicolumn{1}{c|}{}      & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} &     \multicolumn{1}{c|}{1}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} &      \multicolumn{1}{c|}{}      &                        \\ \cline{2-9}
+			              \multicolumn{1}{c|}{}               &     \multicolumn{1}{c|}{1}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{} &      \multicolumn{1}{c|}{}      &      $\bar{Q}_2$       \\ \cline{2-9}
+			                                                  &                                 &              \multicolumn{2}{c}{}               &              \multicolumn{2}{c}{}              &              \multicolumn{2}{c}{}              &                                 &                        \\
+			              \multicolumn{1}{l}{}                & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$}                       & \multicolumn{2}{l}{$\bar{Q}_3$}                & \multicolumn{2}{l}{$Q_3$}                      & \multicolumn{1}{l}{$\bar{Q}_3$} &  \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%-D5
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:unD5_tab} Диаграмма Вейча для функции переключения триггера $\overline{D}_5$ }
+\begin{tabular}{cccccccccc}
+	                                                  &                                         \multicolumn{4}{c}{$Q_1$}                                          &                                      \multicolumn{4}{c}{$\bar{Q}_1$}                                       &                        \\
+	                                                  &                \multicolumn{2}{c}{$Q_5$}                 &         \multicolumn{2}{c}{$\bar{Q}_5$}         &            \multicolumn{2}{c}{$Q_5$}            &             \multicolumn{2}{c}{$\bar{Q}_5$}              &                        \\ \cline{2-9}
+	   \multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}}    &     \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} &     \multicolumn{1}{c|}{1}      &      $\bar{Q}_2$       \\ \cline{2-9}
+	              \multicolumn{1}{c|}{}               &     \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} &     \multicolumn{1}{c|}{1}      & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+	\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} &      \multicolumn{1}{c|}{}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} &     \multicolumn{1}{c|}{1}      &                        \\ \cline{2-9}
+	              \multicolumn{1}{c|}{}               &      \multicolumn{1}{c|}{}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} &     \multicolumn{1}{c|}{1}      &      $\bar{Q}_2$       \\ \cline{2-9}
+	                                                  &                                 &              \multicolumn{2}{c}{}               &              \multicolumn{2}{c}{}               &              \multicolumn{2}{c}{}               &                                 &                        \\
+	              \multicolumn{1}{l}{}                & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$}                       & \multicolumn{2}{l}{$\bar{Q}_3$}                 & \multicolumn{2}{l}{$Q_3$}                       & \multicolumn{1}{l}{$\bar{Q}_3$} &  \multicolumn{1}{l}{}
+\end{tabular}
+	\end{center}
+\end{table}
+
+$$\overline{D}_5 = Q_4\overline{Q}_2 + \overline{Q}_3\overline{Q}_5 + \overline{Q}_3\overline{Q}_4 + Q_4\overline{Q}_1$$
+
+$$D_5 = \overline{Q_4\overline{Q}_2} + \overline{\overline{Q}_3\overline{Q}_5} + \overline{\overline{Q}_3\overline{Q}_4} + \overline{Q_4\overline{Q}_1}$$
+
+
+%F4
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:F4_tab} Диаграмма Вейча для функции переходов $F_4$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%D4
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:D4_tab} Диаграмма Вейча для функции переключения триггера $D_4$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%-D4
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:unD4_tab} Диаграмма Вейча для функции переключения триггера $\overline{D}_4$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+$$\overline{D}_4 = Q_4Q_3Q_2Q_1 + \overline{Q}_4\overline{Q}_3 + \overline{Q}_4\overline{Q}_2 + \overline{Q}_4\overline{Q}_1$$
+
+$$D_5 = \overline{Q_4Q_3Q_2Q_1} + \overline{\overline{Q}_4\overline{Q}_3} + \overline{\overline{Q}_4\overline{Q}_2} + \overline{\overline{Q}_4\overline{Q}_1}$$
+
+
+%F3
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:F3_tab} Диаграмма Вейча для функции переходов $F_3$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%D3
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:D3_tab} Диаграмма Вейча для функции переключения триггера $D_3$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%-D3
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:unD3_tab} Диаграмма Вейча для функции переключения триггера $\overline{D}_3$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+$$\overline{D}_3 = Q_3Q_2Q_1 + \overline{Q}_3\overline{Q}_2 + Q_5\overline{Q}_1 + \overline{Q}_3\overline{Q}_1$$
+
+$$D_3 = \overline{Q_3Q_2Q_1} + \overline{\overline{Q}_3\overline{Q}_2} + \overline{Q_5\overline{Q}_1} + \overline{\overline{Q}_3\overline{Q}_1}$$
+
+
+%F2
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:F2_tab} Диаграмма Вейча для функции переходов $F_2$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%D2
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:D2_tab} Диаграмма Вейча для функции переключения триггера $D_2$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%-D2
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:unD2_tab} Диаграмма Вейча для функции переключения триггера $\overline{D}_2$ }
+		\begin{tabular}{cccccccccc}
+			                                                  &                                         \multicolumn{4}{c}{$Q_1$}                                          &                                      \multicolumn{4}{c}{$\bar{Q}_1$}                                       &                        \\
+			                                                  &                \multicolumn{2}{c}{$Q_5$}                 &         \multicolumn{2}{c}{$\bar{Q}_5$}         &            \multicolumn{2}{c}{$Q_5$}            &             \multicolumn{2}{c}{$\bar{Q}_5$}              &                        \\ \cline{2-9}
+			   \multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}}    &     \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} &     \multicolumn{1}{c|}{1}      &      $\bar{Q}_2$       \\ \cline{2-9}
+			              \multicolumn{1}{c|}{}               &     \multicolumn{1}{c|}{X}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{}  &      \multicolumn{1}{c|}{}      & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} &     \multicolumn{1}{c|}{1}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{}  &      \multicolumn{1}{c|}{}      &                        \\ \cline{2-9}
+			              \multicolumn{1}{c|}{}               &      \multicolumn{1}{c|}{}      & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{}  & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} &     \multicolumn{1}{c|}{1}      &      $\bar{Q}_2$       \\ \cline{2-9}
+			                                                  &                                 &              \multicolumn{2}{c}{}               &              \multicolumn{2}{c}{}               &              \multicolumn{2}{c}{}               &                                 &                        \\
+			              \multicolumn{1}{l}{}                & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$}                       & \multicolumn{2}{l}{$\bar{Q}_3$}                 & \multicolumn{2}{l}{$Q_3$}                       & \multicolumn{1}{l}{$\bar{Q}_3$} &  \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+$$\overline{D}_2 = Q_2Q_1 + \overline{Q}_3\overline{Q}_2$$
+
+$$D_5 = \overline{Q_2Q_1} + \overline{\overline{Q}_3\overline{Q}_2}$$
+
+%F1
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:F1_tab} Диаграмма Вейча для функции переходов $F_1$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{$\bigtriangleup$} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{$\bigtriangleup$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangledown$} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{$\bigtriangleup$} & \multicolumn{1}{c|}{$\bigtriangleup$} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%D1
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:D1_tab} Диаграмма Вейча для функции переключения триггера $D_1$ }
+		\begin{tabular}{cccccccccc}
+			& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+			& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & $\bar{Q}_2$ \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+			\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} &  \\ \cline{2-9}
+			\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & $\bar{Q}_2$ \\ \cline{2-9}
+			&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+			\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+		\end{tabular}
+	\end{center}
+\end{table}
+
+%-D1
+
+\begin{table}[H]
+	\begin{center}
+		\caption{\label{tab:unD1_tab} Диаграмма Вейча для функции переключения триггера $\overline{D}_1$ }
+	\begin{tabular}{cccccccccc}
+		& \multicolumn{4}{c}{$Q_1$} & \multicolumn{4}{c}{$\bar{Q}_1$} &  \\
+		& \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} & \multicolumn{2}{c}{$Q_5$} & \multicolumn{2}{c}{$\bar{Q}_5$} &  \\ \cline{2-9}
+		\multicolumn{1}{c|}{\multirow{2}{*}{$Q_4$}} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+		\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multirow{2}{*}{$Q_2$} \\ \cline{2-9}
+		\multicolumn{1}{c|}{\multirow{2}{*}{$\bar{Q}_4$}} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} &  \\ \cline{2-9}
+		\multicolumn{1}{c|}{} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{X} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{} & $\bar{Q}_2$ \\ \cline{2-9}
+		&  & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} & \multicolumn{2}{c}{} &  &  \\
+		\multicolumn{1}{l}{} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{2}{l}{$\bar{Q}_3$} & \multicolumn{2}{l}{$Q_3$} & \multicolumn{1}{l}{$\bar{Q}_3$} & \multicolumn{1}{l}{}
+	\end{tabular}
+	\end{center}
+\end{table}
+
+$$\overline{D}_1 = Q_1$$
+
+$$D_1 = \overline{Q_1}$$
 
 \section{Общая структура схемы многоразрядного десятичного сумматора комбинационного типа с устройством управления}
 
